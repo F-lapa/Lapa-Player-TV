@@ -118,7 +118,7 @@ img{max-width:100%}
   <div class="sheet">
     <h2>Lista e atualizacao</h2>
     <label style="font-size:12px;color:var(--muted)">Lista M3U</label>
-    <input id="url" type="url" placeholder="https://iptv-org.github.io/iptv/countries/br.m3u"/>
+    <input id="url" type="url" placeholder="https://servidor.com/get.php?username=...&password=...&type=m3u_plus&output=mpegts"/>
     <label style="font-size:12px;color:var(--muted)">HTML no GitHub (link raw)</label>
     <input id="remoteHtml" type="url" placeholder="https://raw.githubusercontent.com/usuario/repo/main/index.html"/>
     <div class="row">
@@ -142,11 +142,11 @@ const RX_MOVIE=/filme|filmes|movie|movies|vod|cinema|film\b|lancamento|lançamen
 const RX_LIVE=/ao vivo|live tv|canais|channel|iptv|esporte|sport|noticia|news|aberto/;
 const RX_FEAT=/destaque|featured|top\s?\d|popular|trending|imdb|oscar|4k|premium|lancamento|lançamento|novo/;
 function classify(it){
-  const blob=(it.group+" "+it.name).toLowerCase();
+  const blob=(it.group+" "+it.name+" "+(it.url||"")).toLowerCase();
   let type="live";
-  if(RX_SERIES.test(blob)&&!/canal|live tv/.test(blob)) type="series";
-  else if(RX_MOVIE.test(blob)) type="movie";
-  else if(RX_LIVE.test(blob)) type="live";
+  if(/\/series\//.test(it.url||"")||(RX_SERIES.test(blob)&&!/canal|live tv/.test(blob))) type="series";
+  else if(/\/movie\//.test(it.url||"")||RX_MOVIE.test(blob)) type="movie";
+  else if(/\/live\//.test(it.url||"")||RX_LIVE.test(blob)) type="live";
   else if(/s\d{2}|e\d{2}|temporada/.test(blob)) type="series";
   return Object.assign({},it,{type:type,featured:RX_FEAT.test(blob)});
 }
@@ -297,8 +297,10 @@ document.getElementById("loadUrl").onclick=async function(){
   const url=document.getElementById("url").value.trim();
   if(!url) return setStatus("Informe a URL","err");
   setStatus("Baixando lista...");
-  try{const res=await fetch(url); if(!res.ok) throw new Error(res.status); loadList(await res.text(),"URL")}
-  catch(e){setStatus("CORS bloqueou a URL. Envie o arquivo .m3u","err")}
+  try{
+    if(window.LapaApp&&LapaApp.loadRemoteList){ LapaApp.loadRemoteList(url); return; }
+    const res=await fetch(url); if(!res.ok) throw new Error(res.status); loadList(await res.text(),"URL");
+  }catch(e){setStatus("Nao deu para baixar. No APK isso passa pelo nativo. Ou envie o arquivo .m3u","err")}
 };
 document.getElementById("file").onchange=function(e){const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=function(){loadList(String(r.result),f.name)}; r.readAsText(f)};
 document.getElementById("paste").onclick=function(){const t=prompt("Cole o M3U"); if(t) loadList(t,"texto")};
