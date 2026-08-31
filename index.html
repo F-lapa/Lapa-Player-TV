@@ -2760,7 +2760,7 @@
       if (e.key === 'Enter') document.getElementById('loginPass')?.focus();
     });
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())).catch(()=>{});
     }
     init();
   </script>
