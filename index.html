@@ -19,21 +19,21 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);c
   font-family:"Segoe UI",Roboto,Inter,system-ui,sans-serif}
 button,input{font:inherit;color:inherit}
 img{max-width:100%}
-.app{height:100dvh;display:grid;grid-template-rows:52px 1fr;padding:var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l)}
-.top{display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid var(--line);
-  background:linear-gradient(#111,#0a0a0a);min-width:0}
-.brand{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.app{height:100dvh;display:grid;grid-template-rows:auto 1fr;padding:var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l)}
+.top{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:44px 40px;align-items:center;gap:0 8px;
+  padding:6px 10px 0;border-bottom:1px solid var(--line);background:linear-gradient(#111,#0a0a0a);min-width:0}
+.brand{display:flex;align-items:center;gap:8px;grid-column:1;grid-row:1}
 .brand img{width:28px;height:28px;border-radius:8px;object-fit:contain;background:#000}
 .brand b{font-size:13px;letter-spacing:.14em}
-.tabs{display:flex;gap:2px;min-width:0;overflow-x:auto;scrollbar-width:none;flex:1}
+.tabs{display:flex;gap:0;min-width:0;overflow-x:auto;scrollbar-width:none;grid-column:1 / -1;grid-row:2}
 .tabs::-webkit-scrollbar{display:none}
-.tab{background:0;border:0;color:#aaa;padding:14px 12px;font-weight:700;font-size:13px;white-space:nowrap;border-bottom:2px solid transparent}
+.tab{background:0;border:0;color:#aaa;padding:10px 12px;font-weight:700;font-size:13px;white-space:nowrap;border-bottom:2px solid transparent;flex-shrink:0}
 .tab.on{color:#fff;border-bottom-color:var(--purple)}
-.searchwrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.searchwrap input{width:min(42vw,220px);height:32px;border-radius:999px;border:1px solid var(--line);background:#111;padding:0 12px 0 32px;font-size:13px}
-.searchwrap{position:relative}
-.searchwrap .lupa{position:absolute;left:10px;font-size:13px;opacity:.6;pointer-events:none}
-.add{height:32px;border-radius:9px;border:1px solid var(--line);background:#161616;padding:0 10px;font-size:12px;font-weight:700}
+.searchwrap{display:flex;align-items:center;gap:6px;grid-column:2 / -1;grid-row:1;min-width:0;position:relative;justify-content:flex-end}
+.qbox{position:relative;flex:1;min-width:0;max-width:100%;display:block}
+.searchwrap input{width:100%;height:32px;border-radius:999px;border:1px solid var(--line);background:#111;padding:0 12px 0 32px;font-size:13px}
+.searchwrap .lupa{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.6;pointer-events:none}
+.add{height:32px;border-radius:9px;border:1px solid var(--line);background:#161616;padding:0 10px;font-size:12px;font-weight:700;flex-shrink:0}
 .page{min-height:0;overflow:auto;overflow-x:hidden}
 .split{display:grid;grid-template-columns:1fr;min-height:100%}
 .side{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 10px 8px}
@@ -82,11 +82,15 @@ img{max-width:100%}
 .splash.hide{opacity:0;visibility:hidden;pointer-events:none}
 .splash img{width:min(240px,70vw);filter:drop-shadow(0 0 28px rgba(139,92,246,.45))}
 @media(min-width:900px){
+  .top{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:52px;padding:0 16px}
+  .brand{grid-column:1;grid-row:1}
+  .tabs{grid-column:2;grid-row:1;justify-content:center}
+  .searchwrap{grid-column:3;grid-row:1}
+  .searchwrap input{width:220px;flex:none}
   .split{grid-template-columns:230px minmax(0,1fr);min-height:100%}
   .side{border-bottom:0;border-right:1px solid var(--line);overflow:auto}
   .grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr))}
   .chgrid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
-  .searchwrap input{width:240px}
 }
 </style>
 </head>
@@ -106,7 +110,7 @@ img{max-width:100%}
       <button class="tab" data-page="movies">Filmes</button>
       <button class="tab" data-page="series">Series</button>
     </nav>
-    <div class="searchwrap"><span class="lupa">⌕</span><input id="q" placeholder="Procurar"/><button class="add" id="openList">+ Lista</button></div>
+    <div class="searchwrap"><label class="qbox"><span class="lupa">⌕</span><input id="q" placeholder="Procurar"/></label><button class="add" id="openList">+ Lista</button></div>
   </header>
   <main class="page" id="page"></main>
 </div>
