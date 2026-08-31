@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#05060a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>LAPA Player TV</title>
@@ -22,28 +22,31 @@
       --safe-b: env(safe-area-inset-bottom, 0px);
       --safe-l: env(safe-area-inset-left, 0px);
       --safe-r: env(safe-area-inset-right, 0px);
-      --header-h: 58px;
-      --max: 1280px;
-      --poster-w: 140px;
+      --header-h: 88px;
+      --max: 100%;
+      --poster-w: 108px;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    html, body { margin: 0; width: 100%; max-width: 100%; height: 100%; background: var(--bg); color: var(--text);
       font-family: Inter, "Segoe UI", system-ui, sans-serif; overflow: hidden; }
-    body { min-height: 100dvh; min-height: 100svh; }
+    body { min-height: 100dvh; min-height: 100svh; overflow-x: hidden; }
     button, input { font: inherit; }
     img { max-width: 100%; height: auto; }
     .app {
-      height: 100dvh; height: 100svh;
+      height: 100dvh; height: 100svh; width: 100%; max-width: 100%;
       display: grid; grid-template-rows: var(--header-h) 1fr;
       padding: var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);
+      overflow: hidden;
     }
     .top {
       display: grid;
-      grid-template-columns: auto minmax(0,1fr) auto;
-      align-items: center; gap: 10px;
-      padding: 0 12px; background: #0b0d14; border-bottom: 1px solid var(--line); z-index: 30;
-      min-width: 0;
+      grid-template-columns: minmax(0,1fr) auto;
+      grid-template-rows: 46px 42px;
+      align-items: center; gap: 6px;
+      padding: 0 10px; background: #0b0d14; border-bottom: 1px solid var(--line); z-index: 30;
+      min-width: 0; width: 100%;
     }
+    nav { grid-column: 1 / -1; }
     .brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .mark { width: 32px; height: 32px; border-radius: 8px; object-fit: contain; background: #000; flex-shrink: 0; }
     .brand b { letter-spacing: .14em; font-size: 12px; }
@@ -61,8 +64,9 @@
       background: #0a0c13; color: var(--text); padding: 0 12px; min-width: 0;
     }
     .clock { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; white-space: nowrap; }
-    .add { border: 0; height: 34px; padding: 0 12px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 12px; background: #1a2030; color: var(--text); white-space: nowrap; }
-    .page { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+    .add { border: 0; height: 34px; padding: 0 10px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 12px; background: #1a2030; color: var(--text); white-space: nowrap; }
+    .search, .clock, .brand small { display: none; }
+    .page { min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; width: 100%; max-width: 100%; }
     .shell { width: min(var(--max), 100%); margin: 0 auto; }
 
     .home-hero {
@@ -120,12 +124,15 @@
     .badge.ser { background: #4d7cff; }
 
     .layout-live {
-      display: grid; grid-template-columns: minmax(160px, 200px) minmax(240px, 320px) minmax(0, 1fr);
-      height: 100%; min-height: 0; width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(190px, 36%) 46px minmax(0, 1fr);
+      height: 100%; min-height: 0; width: 100%; max-width: 100%;
+      overflow: hidden;
     }
-    .cats, .chlist { overflow: auto; border-right: 1px solid var(--line); background: #090b12; min-width: 0; min-height: 0; }
-    .cats { padding: 8px; }
-    .cat { width: 100%; text-align: left; border: 0; background: 0; color: var(--text); padding: 9px 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+    .cats, .chlist { overflow: auto; background: #090b12; min-width: 0; min-height: 0; max-width: 100%; }
+    .cats { padding: 6px 8px; display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; border-bottom: 1px solid var(--line); }
+    .cat { width: auto; flex-shrink: 0; text-align: left; border: 0; background: 0; color: var(--text); padding: 8px 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
     .cat span, .cat { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .cat.active { background: linear-gradient(90deg, rgba(123,77,255,.2), transparent); box-shadow: inset 3px 0 0 var(--accent); color: #cbb6ff; }
     .cat small { color: var(--muted); flex-shrink: 0; }
@@ -170,40 +177,19 @@
     @keyframes rise { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
     @keyframes load { to { width: 100%; } }
 
-    /* phones */
-    @media (max-width: 720px) {
-      :root { --header-h: 96px; --poster-w: 112px; }
-      .top { grid-template-columns: 1fr auto; grid-template-rows: 46px 42px; padding: 0 8px; }
-      .brand small { display: none; }
-      nav { grid-column: 1 / -1; justify-content: flex-start; }
-      .search, .clock { display: none; }
-      .layout-live { grid-template-columns: 1fr; grid-template-rows: minmax(180px, 38%) 44px minmax(0, 1fr); }
-      .cats { display: flex; gap: 6px; overflow: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 6px 8px; }
-      .cat { width: auto; white-space: nowrap; flex-shrink: 0; }
-      .poster.wide { flex-basis: 168px; width: 168px; }
-      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    /* tablets */
-    @media (min-width: 721px) and (max-width: 1100px) {
-      :root { --poster-w: 128px; --max: 100%; }
-      .search { width: 140px; }
-      .layout-live { grid-template-columns: 180px minmax(0, 1fr); grid-template-rows: 1fr; }
-      .layout-live .chlist { grid-column: 1; grid-row: 2; max-height: 42vh; }
-      .layout-live { grid-template-columns: 200px 1fr; grid-template-rows: minmax(0,1fr) minmax(180px, 40%); }
-      .cats { grid-column: 1; grid-row: 1 / span 2; }
-      .stage { grid-column: 2; grid-row: 1; }
-      .chlist { grid-column: 2; grid-row: 2; border-right: 0; border-top: 1px solid var(--line); }
-      .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-    }
-    /* TV / desktop largo */
-    @media (min-width: 1400px) {
-      :root { --max: 1440px; --poster-w: 156px; --header-h: 64px; }
-      .top { padding: 0 24px; }
-    }
-    @media (orientation: landscape) and (max-height: 500px) {
-      :root { --header-h: 46px; }
-      .home-hero { min-height: 160px; padding: 12px 16px; }
-      .layout-live { grid-template-columns: 160px 220px 1fr; }
+    /* desktop / TV only */
+    @media (min-width: 1100px) {
+      :root { --header-h: 58px; --poster-w: 148px; --max: 1280px; }
+      .top { grid-template-columns: auto minmax(0,1fr) auto; grid-template-rows: 58px; }
+      nav { grid-column: auto; }
+      .search, .clock { display: block !important; }
+      .brand small { display: block; }
+      .layout-live {
+        grid-template-columns: 200px 300px minmax(0,1fr);
+        grid-template-rows: 1fr;
+      }
+      .cats { display: block; overflow: auto; border-right: 1px solid var(--line); border-bottom: 0; }
+      .cat { width: 100%; }
     }
   </style>
 </head>
@@ -234,14 +220,19 @@
 </div>
 <div class="modal" id="modal">
   <div class="sheet">
-    <h2>Carregar lista M3U</h2>
-    <p style="color:var(--muted)">O app separa sozinho ao vivo, filmes, series e destaques.</p>
+    <h2>Lista e atualizacao</h2>
+    <p style="color:var(--muted)">A lista M3U e dos canais. O HTML do GitHub atualiza a interface do APK sem reinstalar.</p>
+    <label style="font-size:12px;color:var(--muted)">Lista M3U</label>
     <input id="url" type="url" placeholder="https://provedor.com/playlist.m3u" />
+    <label style="font-size:12px;color:var(--muted)">HTML no GitHub (link raw)</label>
+    <input id="remoteHtml" type="url" placeholder="https://raw.githubusercontent.com/usuario/repo/main/index.html" />
     <div class="row">
-      <button class="btn gold" id="loadUrl">Carregar URL</button>
+      <button class="btn gold" id="loadUrl">Carregar lista</button>
       <label class="btn ghost" for="file">Enviar arquivo</label>
       <input id="file" type="file" accept=".m3u,.m3u8,.txt" />
       <button class="btn ghost" id="paste">Colar texto</button>
+      <button class="btn ghost" id="saveRemote">Salvar GitHub</button>
+      <button class="btn ghost" id="refreshUi">Atualizar interface</button>
       <button class="btn ghost" id="closeModal">Fechar</button>
     </div>
     <p class="status" id="modalStatus"></p>
@@ -457,7 +448,30 @@ pageEl.addEventListener("click", function(e){
   const gg = e.target.closest("[data-gg]");
   if (gg) { if (page === "movies") vodGroup = gg.dataset.gg; else serGroup = gg.dataset.gg; render(); }
 });
-document.getElementById("openList").onclick = function(){ document.getElementById("modal").classList.add("open"); };
+document.getElementById("openList").onclick = function(){
+  document.getElementById("modal").classList.add("open");
+  try {
+    if (window.LapaApp && LapaApp.getRemote) {
+      var u = LapaApp.getRemote();
+      if (u) document.getElementById("remoteHtml").value = u;
+    } else {
+      var u = localStorage.getItem("lapa_remote") || "";
+      if (u) document.getElementById("remoteHtml").value = u;
+    }
+  } catch (e) {}
+};
+document.getElementById("saveRemote").onclick = function(){
+  var u = document.getElementById("remoteHtml").value.trim();
+  if (!u) return setStatus("Cole o link raw do GitHub", "err");
+  localStorage.setItem("lapa_remote", u);
+  try { if (window.LapaApp) LapaApp.setRemote(u); } catch (e) {}
+  setStatus("GitHub salvo. O app baixa a interface ao abrir.", "ok");
+};
+document.getElementById("refreshUi").onclick = function(){
+  try { if (window.LapaApp) { LapaApp.refreshNow(); setStatus("Buscando HTML no GitHub...", "ok"); return; } } catch (e) {}
+  setStatus("Abra pelo APK para atualizar a interface pela nuvem.", "err");
+};
+
 document.getElementById("closeModal").onclick = function(){ document.getElementById("modal").classList.remove("open"); };
 document.getElementById("loadUrl").onclick = async function(){
   const url = document.getElementById("url").value.trim();
